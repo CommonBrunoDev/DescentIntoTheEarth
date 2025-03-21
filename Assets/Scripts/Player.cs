@@ -1,57 +1,166 @@
+// Mouse movement (these are captured in an earlier function within Update)
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
-    [SerializeField] Transform xRotation;
-    [SerializeField] Transform yRotation;
-    [SerializeField] Transform zRotation;
-    [SerializeField] GameObject PlayerBody;
+    float accMouseX = 0f;
+    float accMouseY = 0f;
 
-    [SerializeField] float MovementSpeed;
-    [SerializeField] float MaxSpeed;
+    float verticalRotation = 0f;
+    float horizontalRotation = 0f;
+    float rollRotation = 0f;
 
-    [SerializeField] float MouseSensitivityX;
-    [SerializeField] float MouseSensitivityY;
-    private float rotX;
-    private float rotY;
-    private float rotZ;
+    Vector3 CurrentSpeed = Vector3.zero;
 
+    [Header("Camera")]
+    [SerializeField] float MouseSens = 5f;
+    [SerializeField] float MouseSnap = 20f;
+    [Space(20)]
+
+    [Header("Movement")]
+    [SerializeField] float AccelSpeed = 2f;
+    [SerializeField] float MaxSpeed = 20f;
+    [SerializeField][Range(0f,1f)] float Friction = 0.9f;
+    [Space(20)]
+
+    [Header("Shooting prefabs")]
+    [SerializeField] Transform[] ShootPoints;
+    [SerializeField] Rocket RocketRef;
+    [SerializeField] LaserBullet LaserRef;
+    [SerializeField] float laserDelay;
+    private float laserTimer = 0;
+    private int laserPointInd = 0;
+
+    Rigidbody rb;
+    private static Player instance;
+    public static Player Instance
+    { get{ return instance; } }
+
+    public float health { get; private set; }
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+            Destroy(gameObject);
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        HandleRotation();
-        HandleMovement();
+        ProcessLook();
+        ProcessMovement();
+        ProcessShooting();
+
     }
 
-    void HandleRotation()
+    #region Processes
+    void ProcessLook()
     {
-
-        if (Input.GetKey(KeyCode.Mouse1))
+        Vector2 inputLook = Vector2.zero;
+        if (Gamepad.current.leftStick.ReadValue().magnitude > 0.1f)
         {
-            rotZ += Input.GetAxis("Mouse X") * MouseSensitivityX;
-            zRotation.localRotation = Quaternion.Euler(new Vector3(0, 0, zRotation.localRotation.z + rotZ));
+            inputLook.x = Gamepad.current.leftStick.ReadValue().x;
+            inputLook.y = Gamepad.current.leftStick.ReadValue().y;
         }
         else
         {
-            rotX += Input.GetAxis("Mouse X") * MouseSensitivityX;
-            rotY += Input.GetAxis("Mouse Y") * MouseSensitivityY * -1;
-            xRotation.localRotation = Quaternion.Euler(new Vector3(0, xRotation.localRotation.x + rotX, 0));
-            yRotation.localRotation = Quaternion.Euler(new Vector3(yRotation.localRotation.y + rotY, 0, 0));
+            inputLook.x = Input.GetAxis("Mouse X"); // Mouse X
+            inputLook.y = Input.GetAxis("Mouse Y"); // Mouse Y
         }
 
-        Debug.Log(xRotation.localRotation.y + " / " + yRotation.localRotation.x + " / " + zRotation.localRotation.z);
+        accMouseX = Mathf.Lerp(accMouseX, inputLook.x, MouseSnap * Time.deltaTime);
+        accMouseY = Mathf.Lerp(accMouseY, inputLook.y, MouseSnap * Time.deltaTime);
+
+        float mouseX = accMouseX * MouseSens * 100f * Time.deltaTime;
+        float mouseY = accMouseY * MouseSens * 100f * Time.deltaTime;
+
+        verticalRotation = -mouseY;
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            rollRotation = -mouseX;
+            horizontalRotation = 0;
+        }
+        else
+        {
+            horizontalRotation = mouseX;
+            rollRotation = 0;
+        }
+
+        rb.transform.Rotate(verticalRotation, horizontalRotation, rollRotation, Space.Self);
+    }
+    void ProcessMovement()
+    {
+        float xAxis = 0;
+        if (Gamepad.current.enabled)
+        { xAxis = (Input.GetButton("joystick button 1") ? 1 : 0) - (Input.GetKey("joystick button 2") ? 1 : 0); }
+        else
+        { xAxis = Input.GetAxis("Horizontal"); }
+        
+        CurrentSpeed.x = CalculateSpeed(xAxis, CurrentSpeed.x);
+
+        CurrentSpeed.y = CalculateSpeed(Input.GetAxis("Vertical"), CurrentSpeed.y);
+        CurrentSpeed.z = CalculateSpeed(Input.GetAxis("Distal"), CurrentSpeed.z);
+
+        Vector3 newPosition = rb.transform.TransformDirection(CurrentSpeed * 20);
+        rb.linearVelocity = newPosition; 
+            
+    }
+    void ProcessShooting()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            var r = Instantiate(RocketRef, ShootPoints[Random.Range(0,ShootPoints.Length)].position, transform.rotation);
+            r.SetDirection(transform.forward, gameObject);
+        }
+
+        if (Input.GetKey(KeyCode.E) && laserTimer <= 0)
+        {
+            var l = Instantiate(LaserRef, ShootPoints[laserPointInd].position, transform.rotation);
+            l.SetDirection(transform.forward, gameObject);
+            laserTimer = laserDelay;
+            laserPointInd = (laserPointInd + 1) % ShootPoints.Length;
+        }
+
+        if (laserTimer > 0)
+            laserTimer -= Time.deltaTime;
+    }
+    #endregion
+
+    #region Useful Methods
+    float CalculateSpeed(float input,float speed)
+    {
+        if (input == 0)
+        {
+            if (speed > 0.01f)
+                return speed - AccelSpeed * Time.deltaTime * Friction;
+            if (speed < -0.01f)
+                return speed + AccelSpeed * Time.deltaTime * Friction;
+            else
+                return 0;
+        }
+        else
+            return Mathf.Clamp(speed + input * Time.deltaTime * AccelSpeed, -MaxSpeed, MaxSpeed);
     }
 
-    void HandleMovement()
+    public void TakeDamage(float damage)
     {
-        var hInput = Input.GetAxis("Horizontal");
-        var vInput = Input.GetAxis("Vertical");
-        var dInput = Input.GetAxis("Distal");
-        PlayerBody.transform.Translate(new Vector3(hInput, vInput, dInput).normalized * MovementSpeed * Time.deltaTime,Space.Self);
+        Debug.Log("Player took damage: " + damage);
     }
+
+    public void Destroy()
+    {
+        Debug.Log("De de destructionnnn");
+    }
+    #endregion
 }
