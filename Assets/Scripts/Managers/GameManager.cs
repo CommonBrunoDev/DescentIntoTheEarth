@@ -8,7 +8,7 @@ public enum GameStates
     GameOver
 }
 
-public class Gamemanager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     public GameStates gameState = GameStates.Menu;
 
@@ -21,8 +21,10 @@ public class Gamemanager : MonoBehaviour
     public int totalEnemies = 0;
     public int enemiesEscaped = 0;
 
-    private static Gamemanager instance;
-    public static Gamemanager Instace { get { return instance; } }
+    public bool controllerMode = false;
+
+    private static GameManager instance;
+    public static GameManager Instance { get { return instance; } }
     void Start()
     {
         Cursor.visible = false;

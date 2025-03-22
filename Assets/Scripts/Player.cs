@@ -1,8 +1,11 @@
 // Mouse movement (these are captured in an earlier function within Update)
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using static UnityEngine.EventSystems.StandaloneInputModule;
 
 public class Player : MonoBehaviour, IDamageable
 {
@@ -34,6 +37,10 @@ public class Player : MonoBehaviour, IDamageable
     private float laserTimer = 0;
     private int laserPointInd = 0;
 
+    public InputAction playerControls;
+
+    
+
     Rigidbody rb;
     private static Player instance;
     public static Player Instance
@@ -56,19 +63,33 @@ public class Player : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
     }
 
+    private void OnEnable()
+    {
+        InputManager.OnInputModeChanged += SetInput;
+    }
+    private void OnDisable()
+    {
+        InputManager.OnInputModeChanged -= SetInput;
+    }
+    private void SetInput(InputManager action)
+    {
+        InputMode test = InputMode.Keyboard;
+    }
+
     private void Update()
     {
         ProcessLook();
         ProcessMovement();
         ProcessShooting();
 
+        
     }
 
     #region Processes
     void ProcessLook()
     {
         Vector2 inputLook = Vector2.zero;
-        if (Gamepad.current.leftStick.ReadValue().magnitude > 0.1f)
+        if (InputManager.Instance.controllerMode)
         {
             inputLook.x = Gamepad.current.leftStick.ReadValue().x;
             inputLook.y = Gamepad.current.leftStick.ReadValue().y;
@@ -102,7 +123,7 @@ public class Player : MonoBehaviour, IDamageable
     void ProcessMovement()
     {
         float xAxis = 0;
-        if (Gamepad.current.enabled)
+        if (GameManager.Instance.controllerMode)
         { xAxis = (Input.GetButton("joystick button 1") ? 1 : 0) - (Input.GetKey("joystick button 2") ? 1 : 0); }
         else
         { xAxis = Input.GetAxis("Horizontal"); }
