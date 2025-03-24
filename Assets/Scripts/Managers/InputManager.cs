@@ -18,12 +18,12 @@ public class InputManager : MonoBehaviour
     {
         currentMode = ProcessInputMode();
 
-        if (currentMode != InputMode.Keyboard)
+        if (currentMode != currentModeLastFrame)
         {
             OnInputModeChanged?.Invoke(currentMode);
         }
 
-        currentModeLastFrame = ProcessInputMode();
+        currentModeLastFrame = currentMode;
     }
 
     private InputMode ProcessInputMode()
@@ -31,10 +31,8 @@ public class InputManager : MonoBehaviour
         if (Input.GetJoystickNames().Length == 0)
         { return InputMode.Keyboard; }
 
-        Debug.Log("Checking");
         if (Input.anyKeyDown)
         {
-            Debug.Log("Any Key Down");  
             if (Input.GetKeyDown(KeyCode.Joystick1Button0)) { Debug.Log("0"); return InputMode.Controller; }
             else if (Input.GetKeyDown(KeyCode.Joystick1Button1)) { Debug.Log("1"); return InputMode.Controller; }
             else if (Input.GetKeyDown(KeyCode.Joystick1Button2)) { Debug.Log("2"); return InputMode.Controller; }
@@ -56,23 +54,17 @@ public class InputManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Joystick1Button18)) { Debug.Log("18"); return InputMode.Controller; }
             else if (Input.GetKeyDown(KeyCode.Joystick1Button19)) { Debug.Log("19"); return InputMode.Controller; }
             else
-            { return InputMode.Keyboard; }
+            { Debug.Log("KeyboardFinal"); return InputMode.Keyboard; }
         }
 
-        if (Input.anyKey)
-        {
-            if (Input.GetAxisRaw("Horizontal") != 0) return InputMode.Keyboard;
-            if (Input.GetAxisRaw("Vertical") != 0) return InputMode.Keyboard;
-        }
+        if (Input.GetAxisRaw("Horizontal") != 0) { Debug.Log("KeyH"); return InputMode.Keyboard; }
+        if (Input.GetAxisRaw("Vertical") != 0) {Debug.Log("KeyV"); return InputMode.Keyboard; }
 
-        if (Input.GetAxisRaw("Horizontal") != 0) return InputMode.Controller;
-        if (Input.GetAxisRaw("Vertical") != 0) return InputMode.Controller;
+        if (Input.GetAxisRaw("Joystick Horizontal") != 0) return InputMode.Controller;
+        if (Input.GetAxisRaw("Joystick Vertical") != 0) return InputMode.Controller;
 
-        if (Input.GetAxisRaw("Horizontal2") != 0) return InputMode.Controller;
-        if (Input.GetAxisRaw("Vertical2") != 0) return InputMode.Controller;
-
-        if (Input.GetAxisRaw("HorizontalD") != 0) return InputMode.Controller;
-        if (Input.GetAxisRaw("VerticalD") != 0) return InputMode.Controller;
+        if (Input.GetAxisRaw("Joystick Rot X") != 0) return InputMode.Controller;
+        if (Input.GetAxisRaw("Joystick Rot Y") != 0) return InputMode.Controller;
 
         if (Input.GetAxisRaw("LeftTrigger") < 0) return InputMode.Controller;
         if (Input.GetAxisRaw("RightTrigger") < 0) return InputMode.Controller;

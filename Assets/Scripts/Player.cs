@@ -107,7 +107,8 @@ public class Player : MonoBehaviour, IDamageable
         float mouseY = accMouseY * MouseSens * 100f * Time.deltaTime;
 
         verticalRotation = -mouseY;
-        if (Input.GetKey(KeyCode.Mouse1))
+        if ((playerControls == InputMode.Keyboard && Input.GetKey(KeyCode.Mouse1)
+            || (playerControls == InputMode.Controller && Input.GetKey(KeyCode.JoystickButton9))))
         {
             rollRotation = -mouseX;
             horizontalRotation = 0;
@@ -122,15 +123,18 @@ public class Player : MonoBehaviour, IDamageable
     }
     void ProcessMovement()
     {
-        float zAxis = 0;
         if (playerControls == InputMode.Controller)
-        { zAxis = (Input.GetKey("joystick button 1") ? 1 : 0) - (Input.GetKey("joystick button 0") ? 1 : 0); }
+        {
+            CurrentSpeed.x = CalculateSpeed(Input.GetAxis("Joystick Horizontal"), CurrentSpeed.x);
+            CurrentSpeed.y = CalculateSpeed(Input.GetAxis("Joystick Vertical"), CurrentSpeed.y);
+            CurrentSpeed.z = CalculateSpeed((Input.GetKey("joystick button 1") ? 1 : 0) - (Input.GetKey("joystick button 0") ? 1 : 0), CurrentSpeed.z);
+        }
         else
-        { zAxis = Input.GetAxis("Distal"); }
-        
-        CurrentSpeed.x = CalculateSpeed(Input.GetAxis("Horizontal"), CurrentSpeed.x);
-        CurrentSpeed.y = CalculateSpeed(Input.GetAxis("Vertical"), CurrentSpeed.y);
-        CurrentSpeed.z = CalculateSpeed(zAxis, CurrentSpeed.z);
+        { 
+            CurrentSpeed.x = CalculateSpeed(Input.GetAxis("Horizontal"), CurrentSpeed.x);
+            CurrentSpeed.y = CalculateSpeed(Input.GetAxis("Vertical"), CurrentSpeed.y);
+            CurrentSpeed.z = CalculateSpeed(Input.GetAxis("Distal"), CurrentSpeed.z);
+        }
 
         Vector3 newPosition = rb.transform.TransformDirection(CurrentSpeed * 20);
         rb.linearVelocity = newPosition; 
