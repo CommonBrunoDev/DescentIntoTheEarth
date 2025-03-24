@@ -37,7 +37,7 @@ public class Player : MonoBehaviour, IDamageable
     private float laserTimer = 0;
     private int laserPointInd = 0;
 
-    public InputAction playerControls;
+    public InputMode playerControls;
 
     
 
@@ -71,9 +71,9 @@ public class Player : MonoBehaviour, IDamageable
     {
         InputManager.OnInputModeChanged -= SetInput;
     }
-    private void SetInput(InputManager action)
+    private void SetInput(InputMode action)
     {
-        InputMode test = InputMode.Keyboard;
+        playerControls = action;
     }
 
     private void Update()
@@ -82,14 +82,14 @@ public class Player : MonoBehaviour, IDamageable
         ProcessMovement();
         ProcessShooting();
 
-        
+        Debug.Log(playerControls);
     }
 
     #region Processes
     void ProcessLook()
     {
         Vector2 inputLook = Vector2.zero;
-        if (InputManager.Instance.controllerMode)
+        if (playerControls == InputMode.Controller)
         {
             inputLook.x = Gamepad.current.leftStick.ReadValue().x;
             inputLook.y = Gamepad.current.leftStick.ReadValue().y;
@@ -122,16 +122,15 @@ public class Player : MonoBehaviour, IDamageable
     }
     void ProcessMovement()
     {
-        float xAxis = 0;
-        if (GameManager.Instance.controllerMode)
-        { xAxis = (Input.GetButton("joystick button 1") ? 1 : 0) - (Input.GetKey("joystick button 2") ? 1 : 0); }
+        float zAxis = 0;
+        if (playerControls == InputMode.Controller)
+        { zAxis = (Input.GetKey("joystick button 1") ? 1 : 0) - (Input.GetKey("joystick button 0") ? 1 : 0); }
         else
-        { xAxis = Input.GetAxis("Horizontal"); }
+        { zAxis = Input.GetAxis("Distal"); }
         
-        CurrentSpeed.x = CalculateSpeed(xAxis, CurrentSpeed.x);
-
+        CurrentSpeed.x = CalculateSpeed(Input.GetAxis("Horizontal"), CurrentSpeed.x);
         CurrentSpeed.y = CalculateSpeed(Input.GetAxis("Vertical"), CurrentSpeed.y);
-        CurrentSpeed.z = CalculateSpeed(Input.GetAxis("Distal"), CurrentSpeed.z);
+        CurrentSpeed.z = CalculateSpeed(zAxis, CurrentSpeed.z);
 
         Vector3 newPosition = rb.transform.TransformDirection(CurrentSpeed * 20);
         rb.linearVelocity = newPosition; 
@@ -139,13 +138,14 @@ public class Player : MonoBehaviour, IDamageable
     }
     void ProcessShooting()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if ((playerControls == InputMode.Keyboard && Input.GetKeyDown(KeyCode.Q)) || (playerControls == InputMode.Controller && (Input.GetKeyDown("joystick button 4"))))
         {
             var r = Instantiate(RocketRef, ShootPoints[Random.Range(0,ShootPoints.Length)].position, transform.rotation);
             r.SetDirection(transform.forward, gameObject);
         }
 
-        if (Input.GetKey(KeyCode.E) && laserTimer <= 0)
+        if (((playerControls == InputMode.Keyboard && Input.GetKeyDown(KeyCode.E)) || (playerControls == InputMode.Controller && (Input.GetKeyDown("joystick button 5")))) 
+            && laserTimer <= 0)
         {
             var l = Instantiate(LaserRef, ShootPoints[laserPointInd].position, transform.rotation);
             l.SetDirection(transform.forward, gameObject);

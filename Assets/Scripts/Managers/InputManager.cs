@@ -31,29 +31,30 @@ public class InputManager : MonoBehaviour
         if (Input.GetJoystickNames().Length == 0)
         { return InputMode.Keyboard; }
 
+        Debug.Log("Checking");
         if (Input.anyKeyDown)
         {
-            if ((Input.GetKeyDown(KeyCode.Joystick1Button0))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button1))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button2))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button3))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button4))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button5))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button6))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button7))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button8))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button9))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button10))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button11))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button12))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button13))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button14))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button15))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button16))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button17))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button18))
-            || (Input.GetKeyDown(KeyCode.Joystick1Button19)))
-            { return InputMode.Controller; }
+            Debug.Log("Any Key Down");  
+            if (Input.GetKeyDown(KeyCode.Joystick1Button0)) { Debug.Log("0"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button1)) { Debug.Log("1"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button2)) { Debug.Log("2"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button3)) { Debug.Log("3"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button4)) { Debug.Log("4"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button5)) { Debug.Log("5"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button6)) { Debug.Log("6"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button7)) { Debug.Log("7"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button8)) { Debug.Log("8"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button9)) { Debug.Log("9"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button10)) { Debug.Log("10"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button11)) { Debug.Log("11"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button12)) { Debug.Log("12"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button13)) { Debug.Log("13"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button14)) { Debug.Log("14"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button15)) { Debug.Log("15"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button16)) { Debug.Log("16"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button17)) { Debug.Log("17"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button18)) { Debug.Log("18"); return InputMode.Controller; }
+            else if (Input.GetKeyDown(KeyCode.Joystick1Button19)) { Debug.Log("19"); return InputMode.Controller; }
             else
             { return InputMode.Keyboard; }
         }
