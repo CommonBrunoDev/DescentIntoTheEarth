@@ -11,6 +11,6 @@ public class EnemyBulletHoming : EnemyBulletNormal
     void RotateBullet()
     {
         Vector3 newDirection = (Player.Instance.transform.position - transform.position).normalized;
-        direction = (direction * 1.8f + newDirection * 0.2f) / 2;
+        direction = (direction * 1.85f + newDirection * 0.15f) / 2;
     }
 }
