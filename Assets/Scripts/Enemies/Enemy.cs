@@ -10,7 +10,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        GameManager.Instance.totalEnemies++;
+        if (GameManager.Instance != null)
+            GameManager.Instance.totalEnemies++;
     }
 
     public void TakeDamage(float damage)
