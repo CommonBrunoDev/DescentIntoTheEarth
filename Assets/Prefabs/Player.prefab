@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 4525489192019348673}
   m_Layer: 3
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -348,6 +348,8 @@ MonoBehaviour:
   AccelSpeed: 1
   MaxSpeed: 0.5
   Friction: 0.9
+  energyAmount: 100
+  rocketAmount: 100
   ShootPoints:
   - {fileID: 858933924342307426}
   - {fileID: 3591554276329089095}
@@ -355,6 +357,8 @@ MonoBehaviour:
   RocketRef: {fileID: 6462833931929700271, guid: bf20e1dd9f9da6b45bf84f79627c23ed, type: 3}
   LaserRef: {fileID: 2155642917775725586, guid: b0f5ac3589f4eeb48ab58a4f608f53c1, type: 3}
   laserDelay: 0.2
+  HLOn: {fileID: 0}
+  HLEnergyUsage: 40
   playerControls: 0
 --- !u!1 &4707446773275713568
 GameObject:

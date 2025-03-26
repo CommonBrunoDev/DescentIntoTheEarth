@@ -31,6 +31,21 @@ public class InputManager : MonoBehaviour
         if (Input.GetJoystickNames().Length == 0)
         { return InputMode.Keyboard; }
 
+        if (Input.GetAxisRaw("Horizontal") != 0) { Debug.Log("KeyH"); return InputMode.Keyboard; }
+        if (Input.GetAxisRaw("Vertical") != 0) { Debug.Log("KeyV"); return InputMode.Keyboard; }
+
+        if (Input.GetAxisRaw("Joystick Horizontal") != 0) return InputMode.Controller;
+        if (Input.GetAxisRaw("Joystick Vertical") != 0) return InputMode.Controller;
+
+        if (Input.GetAxisRaw("Joystick Rot X") != 0) return InputMode.Controller;
+        if (Input.GetAxisRaw("Joystick Rot Y") != 0) return InputMode.Controller;
+
+        if (Input.GetAxisRaw("Joystick Rot ZL") != 0) return InputMode.Controller;
+        if (Input.GetAxisRaw("Joystick Rot ZR") != 0) return InputMode.Controller;
+
+        if (Input.GetAxisRaw("LeftTrigger") < 0) return InputMode.Controller;
+        if (Input.GetAxisRaw("RightTrigger") < 0) return InputMode.Controller;
+
         if (Input.anyKeyDown)
         {
             if (Input.GetKeyDown(KeyCode.Joystick1Button0)) { Debug.Log("0"); return InputMode.Controller; }
@@ -56,18 +71,6 @@ public class InputManager : MonoBehaviour
             else
             { Debug.Log("KeyboardFinal"); return InputMode.Keyboard; }
         }
-
-        if (Input.GetAxisRaw("Horizontal") != 0) { Debug.Log("KeyH"); return InputMode.Keyboard; }
-        if (Input.GetAxisRaw("Vertical") != 0) {Debug.Log("KeyV"); return InputMode.Keyboard; }
-
-        if (Input.GetAxisRaw("Joystick Horizontal") != 0) return InputMode.Controller;
-        if (Input.GetAxisRaw("Joystick Vertical") != 0) return InputMode.Controller;
-
-        if (Input.GetAxisRaw("Joystick Rot X") != 0) return InputMode.Controller;
-        if (Input.GetAxisRaw("Joystick Rot Y") != 0) return InputMode.Controller;
-
-        if (Input.GetAxisRaw("LeftTrigger") < 0) return InputMode.Controller;
-        if (Input.GetAxisRaw("RightTrigger") < 0) return InputMode.Controller;
 
         return currentMode;
     }

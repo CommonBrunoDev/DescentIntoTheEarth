@@ -133,9 +133,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111d7ff16b256244199cc2fe383d57e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 8
   explosionRadius: 2
-  explosionDamage: 100
+  explosionDamage: 50
   explosionMesh: {fileID: 5054374900665586675}
   explosionMeshTimer: 3
 --- !u!135 &4412262204645782686

@@ -3,9 +3,9 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     protected GameObject parent;
-    private Vector3 direction;
+    protected Vector3 direction;
     [SerializeField] float speed;
-    float bulletLife = 8f;
+    float bulletLife = 4f;
 
     public void Update()
     {

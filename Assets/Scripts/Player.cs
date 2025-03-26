@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.UI;
 using static UnityEngine.EventSystems.StandaloneInputModule;
 
 public class Player : MonoBehaviour, IDamageable
@@ -30,12 +31,23 @@ public class Player : MonoBehaviour, IDamageable
     [Space(20)]
 
     [Header("Shooting prefabs")]
+    public float energyAmount = 100;
+    public float rocketAmount = 100;
     [SerializeField] Transform[] ShootPoints;
     [SerializeField] Rocket RocketRef;
     [SerializeField] LaserBullet LaserRef;
     [SerializeField] float laserDelay;
     private float laserTimer = 0;
-    private int laserPointInd = 0;
+    [Space(20)]
+
+    [Header("UI")]
+    [SerializeField] Image slimeScreen;
+    [Space(20)]
+
+    [Header("Other")] //HL = HeadLights
+    [SerializeField] Light HLOn;
+    [SerializeField] float HLEnergyUsage = 40;
+    private float HLEnergyTimer = 0;
 
     public InputMode playerControls;
 
@@ -53,14 +65,12 @@ public class Player : MonoBehaviour, IDamageable
         if (instance != null && instance != this)
             Destroy(gameObject);
         else
-        {
             instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
     }
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        HLEnergyTimer = HLEnergyUsage;
     }
 
     private void OnEnable()
@@ -81,8 +91,8 @@ public class Player : MonoBehaviour, IDamageable
         ProcessLook();
         ProcessMovement();
         ProcessShooting();
-
-        Debug.Log(playerControls);
+        ProcessHeadLights();
+        ProcessUI();
     }
 
     #region Processes
@@ -103,22 +113,26 @@ public class Player : MonoBehaviour, IDamageable
         accMouseX = Mathf.Lerp(accMouseX, inputLook.x, MouseSnap * Time.deltaTime);
         accMouseY = Mathf.Lerp(accMouseY, inputLook.y, MouseSnap * Time.deltaTime);
 
-        float mouseX = accMouseX * MouseSens * 100f * Time.deltaTime;
-        float mouseY = accMouseY * MouseSens * 100f * Time.deltaTime;
+        float rotationX = accMouseX * MouseSens * 100f * Time.deltaTime;
+        float rotationY = accMouseY * MouseSens * 100f * Time.deltaTime;
 
-        verticalRotation = -mouseY;
-        if ((playerControls == InputMode.Keyboard && Input.GetKey(KeyCode.Mouse1)
-            || (playerControls == InputMode.Controller && Input.GetKey(KeyCode.JoystickButton9))))
+        verticalRotation = -rotationY;
+        if (playerControls == InputMode.Controller && Input.GetAxis("Joystick Rot ZL") + Input.GetAxis("Joystick Rot ZR") != 0)
         {
-            rollRotation = -mouseX;
+            rollRotation = (Input.GetAxis("Joystick Rot ZR") - Input.GetAxis("Joystick Rot ZL")) * 100f * Time.deltaTime;
+            horizontalRotation = rotationX;
+        }
+        else if (playerControls == InputMode.Keyboard && Input.GetKey(KeyCode.Mouse1))
+        {
+            rollRotation = -rotationX;
             horizontalRotation = 0;
         }
         else
         {
-            horizontalRotation = mouseX;
+            horizontalRotation = rotationX;
             rollRotation = 0;
         }
-
+        
         rb.transform.Rotate(verticalRotation, horizontalRotation, rollRotation, Space.Self);
     }
     void ProcessMovement()
@@ -144,21 +158,66 @@ public class Player : MonoBehaviour, IDamageable
     {
         if ((playerControls == InputMode.Keyboard && Input.GetKeyDown(KeyCode.Q)) || (playerControls == InputMode.Controller && (Input.GetKeyDown("joystick button 4"))))
         {
-            var r = Instantiate(RocketRef, ShootPoints[Random.Range(0,ShootPoints.Length)].position, transform.rotation);
-            r.SetDirection(transform.forward, gameObject);
+            if (rocketAmount > 0)
+            {
+                var r = Instantiate(RocketRef, ShootPoints[2].position, transform.rotation);
+                r.SetDirection(transform.forward, gameObject);
+                rocketAmount--;
+            }
         }
 
-        if (((playerControls == InputMode.Keyboard && Input.GetKeyDown(KeyCode.E)) || (playerControls == InputMode.Controller && (Input.GetKeyDown("joystick button 5")))) 
+        if ((playerControls == InputMode.Keyboard && Input.GetKey(KeyCode.E)) 
+            || (playerControls == InputMode.Controller && (Input.GetKey("joystick button 5"))) 
             && laserTimer <= 0)
         {
-            var l = Instantiate(LaserRef, ShootPoints[laserPointInd].position, transform.rotation);
-            l.SetDirection(transform.forward, gameObject);
-            laserTimer = laserDelay;
-            laserPointInd = (laserPointInd + 1) % ShootPoints.Length;
+            if (energyAmount > 0)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    var l = Instantiate(LaserRef, ShootPoints[i].position, transform.rotation);
+                    l.SetDirection(transform.forward, gameObject);
+
+                }
+                laserTimer = laserDelay;
+                energyAmount--;
+                if (energyAmount <= 0)
+                { HLOn.enabled = false; }
+            }
         }
 
         if (laserTimer > 0)
             laserTimer -= Time.deltaTime;
+    }
+
+    private void ProcessHeadLights()
+    {
+        if ((playerControls == InputMode.Keyboard && Input.GetKeyDown(KeyCode.F))
+            || (playerControls == InputMode.Controller && Input.GetKeyDown("joystick button 2")))
+        {
+            if (HLOn.enabled)
+            { HLOn.enabled = false; }
+            else if (energyAmount > 0)
+            { HLOn.enabled = true; }
+        } 
+
+        if (HLOn.enabled)
+        {
+            if (HLEnergyTimer > 0)
+                HLEnergyTimer -= Time.deltaTime;
+            else
+            {
+                energyAmount--;
+                HLEnergyTimer = HLEnergyUsage;
+                if (energyAmount <= 0)
+                    HLOn.enabled = false;
+            }
+        }
+    }
+
+    private void ProcessUI()
+    {
+        if (slimeScreen != null)
+        { slimeScreen.color = Color.Lerp(slimeScreen.color, new Color(slimeScreen.color.r, slimeScreen.color.g, slimeScreen.color.b, 0), Time.deltaTime); }
     }
     #endregion
 
@@ -183,9 +242,17 @@ public class Player : MonoBehaviour, IDamageable
         Debug.Log("Player took damage: " + damage);
     }
 
-    public void Destroy()
+    public void Death()
     {
         Debug.Log("De de destructionnnn");
+    }
+
+    public void Slimed()
+    {
+        if (slimeScreen != null)
+        { slimeScreen.color = new Color(0, 0, 0, 1f); }
+        else 
+        { Debug.Log("SLIMED! Slimescreen not set");  }
     }
     #endregion
 }
