@@ -67,8 +67,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e41cc40b08cb314c8ffa51dd96b4eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 9
+  speed: 3
+  bulletLife: 10
   damage: 8
+  rotationPower: 1
 --- !u!1 &7911801232100244071
 GameObject:
   m_ObjectHideFlags: 0
