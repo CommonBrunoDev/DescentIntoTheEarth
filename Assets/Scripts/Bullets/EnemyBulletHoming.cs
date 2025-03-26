@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemyBulletHoming : EnemyBulletNormal
 {
+    [SerializeField][Range(0,1)] float rotationPower = 1f;
     private new void Update()
     {
         RotateBullet();
@@ -10,7 +11,8 @@ public class EnemyBulletHoming : EnemyBulletNormal
 
     void RotateBullet()
     {
+        float power = 2 - rotationPower;
         Vector3 newDirection = (Player.Instance.transform.position - transform.position).normalized;
-        direction = (direction * 1.85f + newDirection * 0.15f) / 2;
+        direction = (direction * power + newDirection * rotationPower) / 2;
     }
 }
