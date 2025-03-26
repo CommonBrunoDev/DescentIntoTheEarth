@@ -5,7 +5,7 @@ public class Bullet : MonoBehaviour
     protected GameObject parent;
     protected Vector3 direction;
     [SerializeField] float speed;
-    float bulletLife = 4f;
+    [SerializeField] float bulletLife = 4f;
 
     public void Update()
     {
