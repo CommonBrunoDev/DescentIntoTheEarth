@@ -11,6 +11,9 @@ public class EnemyCrawler : Enemy
     [SerializeField] float shootDelay;
     private float shootTimer;
 
+    [SerializeField] bool stopShooting = false;
+    [SerializeField] float agentSpeed = 2;
+
     private void Start()
     {
         AIScript = GetComponent<AICrawler>();
@@ -23,14 +26,14 @@ public class EnemyCrawler : Enemy
         {
             Debug.DrawLine(transform.position, hit.transform.position, new UnityEngine.Color(1f, 1f, 1.0f),1);
             Debug.Log(hit.collider.tag);
-            if (hit.collider.CompareTag("Player"))
+            if (hit.collider.CompareTag("Player") && (!stopShooting))
             {
                 AIScript.LinkedAgent.speed = 0;
                 isShooting = true;
             }
             else
             {
-                AIScript.LinkedAgent.speed = 2;
+                AIScript.LinkedAgent.speed = agentSpeed;
                 isShooting = false;
             }
         }
