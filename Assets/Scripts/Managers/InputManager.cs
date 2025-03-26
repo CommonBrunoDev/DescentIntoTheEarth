@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum InputMode { Keyboard, Controller }
 public class InputManager : MonoBehaviour
@@ -34,8 +35,8 @@ public class InputManager : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") != 0) { Debug.Log("KeyH"); return InputMode.Keyboard; }
         if (Input.GetAxisRaw("Vertical") != 0) { Debug.Log("KeyV"); return InputMode.Keyboard; }
 
-        if (Input.GetAxisRaw("Joystick Horizontal") != 0) return InputMode.Controller;
-        if (Input.GetAxisRaw("Joystick Vertical") != 0) return InputMode.Controller;
+        if (Gamepad.current.leftStick.ReadValue().x != 0) return InputMode.Controller;
+        if (Gamepad.current.leftStick.ReadValue().y != 0) return InputMode.Controller;
 
         if (Input.GetAxisRaw("Joystick Rot X") != 0) return InputMode.Controller;
         if (Input.GetAxisRaw("Joystick Rot Y") != 0) return InputMode.Controller;

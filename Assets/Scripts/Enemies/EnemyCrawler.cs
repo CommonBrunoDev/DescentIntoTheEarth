@@ -53,7 +53,7 @@ public class EnemyCrawler : Enemy
     private void Shoot()
     {
         var b = Instantiate(bulletPrefab, transform.position, transform.rotation);
-        b.SetDirection(Player.Instance.transform.position - transform.position, gameObject);
+        b.SetDirection((Player.Instance.transform.position - transform.position) / 10, gameObject);
     }
 
     private void Escape()
