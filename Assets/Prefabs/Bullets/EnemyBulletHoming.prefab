@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6374093294195712465}
   m_Layer: 0
   m_Name: EnemyBulletHoming
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69,8 +69,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 3
   bulletLife: 10
-  damage: 8
   rotationPower: 1
+  damage: 8
 --- !u!1 &7911801232100244071
 GameObject:
   m_ObjectHideFlags: 0

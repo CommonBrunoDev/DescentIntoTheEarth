@@ -26,22 +26,28 @@ public class EnemyFlying : Enemy
     }
     private void Update()
     {
-        var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
-        if (Physics.Raycast(ray, out var hit, 1000, attackLayers))
+
+        //Checking player
+        Debug.Log(Vector3.Distance(movePoint, transform.position));
+        if (Vector3.Distance(movePoint, transform.position) < 20)
         {
-            Debug.DrawLine(transform.position, hit.transform.position, new UnityEngine.Color(1f, 1f, 1.0f), 1);
-            if (hit.collider.CompareTag("Player") && (!stopShooting))
+            var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
+            if (Physics.Raycast(ray, out var hit, 1000, attackLayers))
             {
-                isShooting = true;
-                currentSpeed = speed / 2;
-            }
-            else
-            {
-                isShooting = false;
-                currentSpeed = speed;
+                if (hit.collider.CompareTag("Player") && (!stopShooting))
+                {
+                    isShooting = true;
+                    currentSpeed = speed / 2;
+                }
+                else
+                {
+                    isShooting = false;
+                    currentSpeed = speed;
+                }
             }
         }
 
+        //Shooting
         if(isShooting)
         {
             if (shootTimer <= 0 && bullet == null)
@@ -53,24 +59,14 @@ public class EnemyFlying : Enemy
             { shootTimer -= Time.deltaTime; }
         }
 
-        var moveRay = new Ray(transform.position, movePoint);
-        if (Physics.Raycast(moveRay, out var moveHit, 0.1f, moveLayers))
-        {
-            Debug.Log(moveHit.collider.CompareTag("Wall"));
-            Debug.Log(Vector3.Distance(movePoint, transform.position));
-            if (moveHit.collider.CompareTag("Wall") || Vector3.Distance(movePoint, transform.position) < 0.1)
-            { 
-                movePoint = transform.position + Random.insideUnitSphere * maxMoveDistance;
-                Debug.Log("Relocated");
-            }
-        }
+        //Check movement and walls
+        var moveRay = new Ray(transform.position, movePoint - transform.position);
+        if (Physics.Raycast(moveRay, maxMoveDistance, moveLayers) || Vector3.Distance(movePoint, transform.position) < 1.5f)
+        { movePoint = transform.position + Random.insideUnitSphere * Random.Range(0f, 1f) * maxMoveDistance; }
+        else 
+        { transform.position += (movePoint - transform.position) * currentSpeed * Time.deltaTime; }
+            HandleRotation();
 
-        Debug.Log("Drawed line");
-        Debug.DrawLine(transform.position, movePoint, new UnityEngine.Color(1f, 1f, 1.0f), 1);
-
-        HandleRotation();
-
-        transform.position += (movePoint - transform.position) * currentSpeed * Time.deltaTime;
     }
 
     private void HandleRotation()
