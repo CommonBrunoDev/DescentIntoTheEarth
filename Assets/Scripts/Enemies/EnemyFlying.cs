@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyFlying : Enemy
 {
     [SerializeField] float maxMoveDistance = 10;
-    private Vector3 movePoint = Vector3.zero;
+    public Vector3 movePoint;
 
     [SerializeField] bool stopShooting = false;
     [SerializeField] float speed = 2;
@@ -13,13 +13,17 @@ public class EnemyFlying : Enemy
     [SerializeField] LayerMask attackLayers;
     private bool isShooting = false;
 
-    [SerializeField] EnemyBulletNormal bulletPrefab;
+    [SerializeField] Bullet bulletPrefab;
     [SerializeField] float shootDelay;
     private float shootTimer;
     private Bullet bullet;
 
     [SerializeField] Transform meshTransform;
 
+    private void Start()
+    {
+        movePoint = transform.position;
+    }
     private void Update()
     {
         var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
@@ -38,9 +42,9 @@ public class EnemyFlying : Enemy
             }
         }
 
-        if (isShooting)
+        if(isShooting)
         {
-            if (shootTimer <= 0 && !bullet.gameObject.activeSelf)
+            if (shootTimer <= 0 && bullet == null)
             {
                 Shoot();
                 shootTimer = shootDelay;
@@ -49,8 +53,20 @@ public class EnemyFlying : Enemy
             { shootTimer -= Time.deltaTime; }
         }
 
-        if ((movePoint - transform.position).magnitude < 1)
-        { RelocateMovement(); }
+        var moveRay = new Ray(transform.position, movePoint);
+        if (Physics.Raycast(moveRay, out var moveHit, 0.1f, moveLayers))
+        {
+            Debug.Log(moveHit.collider.CompareTag("Wall"));
+            Debug.Log(Vector3.Distance(movePoint, transform.position));
+            if (moveHit.collider.CompareTag("Wall") || Vector3.Distance(movePoint, transform.position) < 0.1)
+            { 
+                movePoint = transform.position + Random.insideUnitSphere * maxMoveDistance;
+                Debug.Log("Relocated");
+            }
+        }
+
+        Debug.Log("Drawed line");
+        Debug.DrawLine(transform.position, movePoint, new UnityEngine.Color(1f, 1f, 1.0f), 1);
 
         HandleRotation();
 
@@ -71,19 +87,4 @@ public class EnemyFlying : Enemy
         bullet.SetDirection((Player.Instance.transform.position - transform.position) / 10, gameObject);
     }
 
-    private void RelocateMovement()
-    {
-        var check = false;
-        while (!check)
-        {
-            movePoint = transform.position + Random.insideUnitSphere * maxMoveDistance;
-            var ray = new Ray(transform.position, movePoint);
-            if (Physics.Raycast(ray, out var hit, 1000, moveLayers))
-            {
-                Debug.DrawLine(transform.position, hit.transform.position, new UnityEngine.Color(1f, 1f, 1.0f), 1);
-                if (hit.collider == null)
-                { check = true;  }
-            }
-        }
-    }
 }

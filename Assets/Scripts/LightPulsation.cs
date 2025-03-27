@@ -17,5 +17,4 @@ public class LightPulsation : MonoBehaviour
     {
         light.intensity = maxIntensity * 3/5 + Mathf.Sin(Mathf.PI * (Mathf.PI * + Time.time * pulsationSpeed)) * (maxIntensity * 2/5); ;
     }
-    //Sin(PI* (u + 0.5f * t));
 }
