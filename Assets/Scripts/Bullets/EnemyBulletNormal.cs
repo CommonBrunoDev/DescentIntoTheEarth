@@ -15,7 +15,7 @@ public class EnemyBulletNormal : Bullet
                 { collision.GetComponent<Player>().Slimed(); }
 
                 damageable.TakeDamage(damage);
-                Destroy(this.gameObject);
+                Destroy(this.gameObject); 
             }
         }
     }

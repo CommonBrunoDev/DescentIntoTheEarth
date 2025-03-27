@@ -15,5 +15,5 @@ public class LaserBullet : Bullet
                 Destroy(this.gameObject);
             }
         }
-    }
+    } 
 }

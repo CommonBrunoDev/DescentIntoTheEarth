@@ -7,9 +7,10 @@ public class EnemyCrawler : Enemy
     private AICrawler AIScript;
     [SerializeField] LayerMask layersToHit;
     private bool isShooting = false;
-    [SerializeField] EnemyBulletNormal bulletPrefab;
+    [SerializeField] Bullet bulletPrefab;
     [SerializeField] float shootDelay;
     private float shootTimer;
+    private Bullet bullet;
 
     [SerializeField] bool stopShooting = false;
     [SerializeField] float agentSpeed = 2;
@@ -40,7 +41,7 @@ public class EnemyCrawler : Enemy
         
         if (isShooting)
         {
-            if (shootTimer <= 0)
+            if (shootTimer <= 0 && bullet == null)
             {
                 Shoot();
                 shootTimer = shootDelay;
@@ -55,8 +56,8 @@ public class EnemyCrawler : Enemy
 
     private void Shoot()
     {
-        var b = Instantiate(bulletPrefab, transform.position, transform.rotation);
-        b.SetDirection((Player.Instance.transform.position - transform.position) / 10, gameObject);
+        bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+        bullet.SetDirection((Player.Instance.transform.position - transform.position) / 10, gameObject);
     }
 
     private void Escape()

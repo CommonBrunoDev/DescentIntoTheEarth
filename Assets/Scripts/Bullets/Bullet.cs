@@ -20,4 +20,5 @@ public class Bullet : MonoBehaviour
         this.direction = direction;
         this.parent = parent;
     }
+
 }

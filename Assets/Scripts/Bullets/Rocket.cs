@@ -14,7 +14,7 @@ public class Rocket : Bullet
     {
         explosionMesh.enabled = false;
     }
-    private void Update()
+    private new void Update()
     {
         if (hasExploded)
         {

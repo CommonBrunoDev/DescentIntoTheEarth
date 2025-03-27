@@ -9,7 +9,6 @@ public class AICrawler : MonoBehaviour
     [SerializeField] float NearestPointSearchRange = 0.5f;
 
     public NavMeshAgent LinkedAgent;
-    bool DestinationSet = false;
     bool OffMeshLinkInProgress = false;
 
     private void Awake()
@@ -20,12 +19,6 @@ public class AICrawler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!LinkedAgent.pathPending && !LinkedAgent.isOnOffMeshLink &&
-            (LinkedAgent.remainingDistance <= LinkedAgent.stoppingDistance))
-        {
-            DestinationSet = false;
-        }
-
         if (LinkedAgent.isOnOffMeshLink && !OffMeshLinkInProgress)
         {
             OffMeshLinkInProgress = true;
@@ -65,7 +58,6 @@ public class AICrawler : MonoBehaviour
         {
             LinkedAgent.SetDestination(hitResult.position);
             Debug.Log(LinkedAgent.destination);
-            DestinationSet = true;
         }
     }
 }
