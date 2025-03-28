@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public float slimeExplosionRadius = 1;
     public float slimeDamage = 4;
+    public float pointsAwarded = 0;
 
     private void Start()
     {
@@ -24,6 +25,8 @@ public class Enemy : MonoBehaviour, IDamageable
     public void Death()
     {
         Slimify();
+        GameManager.Instance.totalPoints += pointsAwarded;
+        GameManager.Instance.enemyKillPoints += pointsAwarded;
         Destroy(gameObject);
     }
     public void Slimify()

@@ -33,6 +33,20 @@ public class GameManager : MonoBehaviour
 
     private static GameManager instance;
     public static GameManager Instance { get { return instance; } }
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         Cursor.visible = false;
@@ -41,20 +55,19 @@ public class GameManager : MonoBehaviour
 
     public void EnemyExit()
     {
-
-    }
-
-    public void Addpoints(int points)
-    {
-        totalPoints += points;
+        enemiesEscaped++;
+        enemyEscapePoints -= 200;
+        totalPoints -= 200;
     }
 
     public void LevelComplete()
     {
-
+        MusicManager.Instance.PlayMenuMusic();
+        Debug.Log("Level Complete");
     }
     public void GameOver()
     {
-
+        MusicManager.Instance.PlayMenuMusic();
+        Debug.Log("Game over");
     }
 }

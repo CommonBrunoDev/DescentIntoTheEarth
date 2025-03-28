@@ -12,7 +12,7 @@ public class ExitArea : MonoBehaviour
             }
             else
             {
-                Player.Instance.exitLabel.SetActive(true);
+                Player.Instance.exitPopup.SetActive(true);
             }
         }
         else if (other.CompareTag("Enemy"))
@@ -26,7 +26,7 @@ public class ExitArea : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Player.Instance.exitLabel.SetActive(false);
+            Player.Instance.exitPopup.SetActive(false);
         }
     }
 }

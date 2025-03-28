@@ -42,7 +42,8 @@ public class Player : MonoBehaviour, IDamageable
 
     [Header("UI")]
     [SerializeField] Image slimeScreen;
-    public GameObject exitLabel;
+    public GameObject exitPopup;
+    public GameObject bombPopup;
     [Space(20)]
 
     [Header("Other")] //HL = HeadLights
@@ -196,10 +197,7 @@ public class Player : MonoBehaviour, IDamageable
         if ((playerControls == InputMode.Keyboard && Input.GetKeyDown(KeyCode.F))
             || (playerControls == InputMode.Controller && Input.GetKeyDown("joystick button 2")))
         {
-            if (HLOn.enabled)
-            { HLOn.enabled = false; }
-            else if (energyAmount > 0)
-            { HLOn.enabled = true; }
+            HandleActivation();
         } 
 
         if (HLOn.enabled)
@@ -214,6 +212,14 @@ public class Player : MonoBehaviour, IDamageable
                     HLOn.enabled = false;
             }
         }
+    }
+
+    public void HandleActivation()
+    {
+        if (HLOn.enabled)
+        { HLOn.enabled = false; }
+        else if (energyAmount > 0)
+        { HLOn.enabled = true; }
     }
 
     private void ProcessUI()

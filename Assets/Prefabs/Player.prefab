@@ -274,7 +274,8 @@ MonoBehaviour:
   LaserRef: {fileID: 2155642917775725586, guid: b0f5ac3589f4eeb48ab58a4f608f53c1, type: 3}
   laserDelay: 0.2
   slimeScreen: {fileID: 6207003222582815393}
-  exitLabel: {fileID: 0}
+  exitPopup: {fileID: 0}
+  bombPopup: {fileID: 0}
   HLOn: {fileID: 8212235582248455691}
   HLEnergyUsage: 40
   playerControls: 0
@@ -456,8 +457,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5788173114164143950}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.00012472655}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
