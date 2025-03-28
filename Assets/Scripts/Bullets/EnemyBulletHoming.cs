@@ -15,6 +15,7 @@ public class EnemyBulletHoming : Bullet
         float power = 2 - rotationPower;
         Vector3 newDirection = (Player.Instance.transform.position - transform.position).normalized;
         direction = (direction * power + newDirection * rotationPower) / 2;
+        transform.rotation = Quaternion.LookRotation(direction);
     }
     private void OnTriggerEnter(Collider collision)
     {

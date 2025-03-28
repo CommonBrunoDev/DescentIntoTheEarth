@@ -97,6 +97,37 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1 &5151587666820403645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8964815035150316114}
+  m_Layer: 0
+  m_Name: ShootPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8964815035150316114
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5151587666820403645}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 2.98, z: -0.081}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3775085584034909898}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8210246502344571618
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,8 +227,8 @@ MonoBehaviour:
   slimeDamage: 4
   maxMoveDistance: 10
   movePoint: {x: 0, y: 0, z: 0}
-  stopShooting: 0
-  speed: 2
+  stopShooting: 1
+  speed: 1
   currentSpeed: 2
   moveLayers:
     serializedVersion: 2
@@ -206,8 +237,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 136
   bulletPrefab: {fileID: 6374093294195712465, guid: 10f2b953edd6e014790c08204dc3c776, type: 3}
-  shootDelay: 0
+  shootDelay: 2
   meshTransform: {fileID: 3775085584034909898}
+  shootPoint: {fileID: 8964815035150316114}
 --- !u!1001 &3740649793582803233
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -291,6 +323,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e82bb01d64e9b744d86d7d0c7c799e15, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2166480767721671297}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e82bb01d64e9b744d86d7d0c7c799e15, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8964815035150316114}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e82bb01d64e9b744d86d7d0c7c799e15, type: 3}
 --- !u!4 &3775085584034909898 stripped

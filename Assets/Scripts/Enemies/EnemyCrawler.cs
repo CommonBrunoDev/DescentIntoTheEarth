@@ -15,32 +15,39 @@ public class EnemyCrawler : Enemy
     [SerializeField] bool stopShooting = false;
     [SerializeField] float agentSpeed = 2;
 
+    [SerializeField] Transform meshTransform;
+    [SerializeField] Transform shootPoint;
+    [SerializeField] Transform exitPoint;
+
     private void Start()
     {
         AIScript = GetComponent<AICrawler>();
+        AIScript.LinkedAgent.SetDestination(exitPoint.position);
     }
 
     private void Update()
     {
-        var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
-        if (Physics.Raycast(ray, out var hit, 1000, layersToHit))
+        if (Vector3.Distance(Player.Instance.transform.position, transform.position) < 3)
         {
-            Debug.DrawLine(transform.position, hit.transform.position, new UnityEngine.Color(1f, 1f, 1.0f),1);
-            Debug.Log(hit.collider.tag);
-            if (hit.collider.CompareTag("Player") && (!stopShooting))
+            var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
+            if (Physics.Raycast(ray, out var hit, 1000, layersToHit))
             {
-                AIScript.LinkedAgent.speed = 0;
-                isShooting = true;
-            }
-            else
-            {
-                AIScript.LinkedAgent.speed = agentSpeed;
-                isShooting = false;
+                if (hit.collider.CompareTag("Player") && (!stopShooting))
+                {
+                    AIScript.LinkedAgent.speed = 0;
+                    isShooting = true;
+                }
+                else
+                {
+                    AIScript.LinkedAgent.speed = agentSpeed;
+                    isShooting = false;
+                }
             }
         }
         
         if (isShooting)
         {
+            meshTransform.rotation = Quaternion.LookRotation(Player.Instance.transform.position - transform.position);
             if (shootTimer <= 0 && bullet == null)
             {
                 Shoot();
@@ -49,19 +56,15 @@ public class EnemyCrawler : Enemy
             else
             { shootTimer -= Time.deltaTime; }
         }
-
-        if (AIScript.LinkedAgent.remainingDistance < 1)
-        { Escape(); }
+        else
+        {
+            meshTransform.rotation = Quaternion.Euler(Vector3.zero);
+        }
     }
 
     private void Shoot()
     {
-        bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+        bullet = Instantiate(bulletPrefab, shootPoint.position, transform.rotation);
         bullet.SetDirection((Player.Instance.transform.position - transform.position) / 10, gameObject);
-    }
-
-    private void Escape()
-    {
-
     }
 }
