@@ -8,7 +8,6 @@ public class HealthPickup : Pickup
         if (other.CompareTag("Player"))
         {
             Player.Instance.HP = Mathf.Clamp(Player.Instance.health + healPower,0,100);
-            Destroy(gameObject);
         }
     }
 }

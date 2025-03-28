@@ -8,7 +8,6 @@ public class LaserPickup : Pickup
         if (other.CompareTag("Player"))
         {
             Player.Instance.energyAmount = energySet;
-            Destroy(gameObject);
         }
     }
 }

@@ -8,7 +8,6 @@ public class MissilePickup : Pickup
         if (other.CompareTag("Player"))
         {
             Player.Instance.rocketAmount += missileReload;
-            Destroy(gameObject);
         }
     }
 }
