@@ -268,7 +268,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 4909960702535650660, guid: cb20a9bc874e7bb488fa13df54462bc8, type: 3}
   shootDelay: 1
   stopShooting: 0
-  agentSpeed: 2
+  agentSpeed: 0.3
   meshTransform: {fileID: 3763892254058622007}
   shootPoint: {fileID: 3978914219877052524}
   exitPoint: {fileID: 0}
