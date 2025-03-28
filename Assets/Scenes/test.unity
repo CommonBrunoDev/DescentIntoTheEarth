@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
+  m_AmbientSkyColor: {r: 0, g: 0, b: 0, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -1921,6 +1921,7 @@ GameObject:
   m_Component:
   - component: {fileID: 240316579}
   - component: {fileID: 240316578}
+  - component: {fileID: 240316580}
   m_Layer: 0
   m_Name: BombArea
   m_TagString: Untagged
@@ -1964,6 +1965,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &240316580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240316577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f462f49cef5953845b442d63d056b035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 1704371499}
+  playerInArea: 0
 --- !u!4 &245223520 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6285765043161602373, guid: 6aa7ae8891f59904ca963f0d6f83e9e4, type: 3}
@@ -14545,15 +14560,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2855547178405709821, guid: b5a90eb44e0da6e4587441de48f64017, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.83
+      value: 27.06
       objectReference: {fileID: 0}
     - target: {fileID: 2855547178405709821, guid: b5a90eb44e0da6e4587441de48f64017, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 68.23
+      value: 147.24
       objectReference: {fileID: 0}
     - target: {fileID: 2855547178405709821, guid: b5a90eb44e0da6e4587441de48f64017, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 24.32
+      value: 4.41
       objectReference: {fileID: 0}
     - target: {fileID: 2855547178405709821, guid: b5a90eb44e0da6e4587441de48f64017, type: 3}
       propertyPath: m_LocalRotation.w

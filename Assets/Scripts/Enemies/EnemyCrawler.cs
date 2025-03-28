@@ -47,7 +47,7 @@ public class EnemyCrawler : Enemy
         
         if (isShooting)
         {
-            meshTransform.rotation = Quaternion.LookRotation(Player.Instance.transform.position - transform.position);
+            transform.rotation = Quaternion.LookRotation(Player.Instance.transform.position - transform.position);
             if (shootTimer <= 0 && bullet == null)
             {
                 Shoot();
@@ -58,7 +58,7 @@ public class EnemyCrawler : Enemy
         }
         else
         {
-            meshTransform.rotation = Quaternion.Euler(Vector3.zero);
+            transform.rotation = Quaternion.LookRotation(AIScript.LinkedAgent.desiredVelocity);
         }
     }
 

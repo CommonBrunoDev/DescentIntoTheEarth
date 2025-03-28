@@ -26,8 +26,11 @@ public class Rocket : Bullet
     }
     private void OnTriggerEnter(Collider collision)
     {
-        Debug.Log(collision.name);
-        if (collision.gameObject != parent)
+        if (collision.CompareTag("Wall"))
+        {
+            Explode();
+        }
+        else if (collision.gameObject != parent)
         {
             Explode();
             hasExploded = true;

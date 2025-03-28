@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (GameManager.Instance != null)
             GameManager.Instance.totalEnemies++;
+
+        health = 100;
     }
 
     public void TakeDamage(float damage)

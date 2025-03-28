@@ -4,7 +4,6 @@ public class BombArea : MonoBehaviour
 {
     public SpriteRenderer spriteRenderer;
     public bool playerInArea = false;
-    public bool activated = false;
 
 
     private void Start()
@@ -19,7 +18,7 @@ public class BombArea : MonoBehaviour
             {
                 GameManager.Instance.bombPlanted = true;
                 Player.Instance.HandleActivation();
-                Player.Instance.bombPopup.SetActive(false);
+                Player.Instance.bombPopup.gameObject.SetActive(false);
                 MusicManager.Instance.PlayAlertMusic();
             }
         }
@@ -29,7 +28,7 @@ public class BombArea : MonoBehaviour
     {
         if (other.CompareTag("Player") && !GameManager.Instance.bombPlanted)
         {
-            Player.Instance.bombPopup.SetActive(true);
+            Player.Instance.bombPopup.gameObject.SetActive(true);
             playerInArea = true;
         }
     }
@@ -38,7 +37,7 @@ public class BombArea : MonoBehaviour
     {
         if (other.CompareTag("Player") && !GameManager.Instance.bombPlanted)
         {
-            Player.Instance.bombPopup.SetActive(false);
+            Player.Instance.bombPopup.gameObject.SetActive(false);
             playerInArea = false;
         }
     }

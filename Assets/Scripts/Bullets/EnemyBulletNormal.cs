@@ -7,8 +7,11 @@ public class EnemyBulletNormal : Bullet
     {
         transform.rotation = Quaternion.LookRotation(direction);
 
-        Debug.Log(collision.name);
-        if (collision.gameObject != parent)
+        if (collision.CompareTag("Wall"))
+        {
+            Destroy(this.gameObject);
+        }
+        else if (collision.gameObject != parent)
         {
             IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
             if (damageable != null)

@@ -26,7 +26,7 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        PlayMenuMusic();
+        PlayGameMusic();
     }
 
     public void PlayGameMusic()

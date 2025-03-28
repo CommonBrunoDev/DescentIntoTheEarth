@@ -19,8 +19,11 @@ public class EnemyBulletHoming : Bullet
     }
     private void OnTriggerEnter(Collider collision)
     {
-        Debug.Log(collision.name);
-        if (collision.gameObject != parent)
+        if (collision.CompareTag("Wall"))
+        {
+            Destroy(this.gameObject);
+        }
+        else if (collision.gameObject != parent)
         {
             IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
             if (damageable != null)

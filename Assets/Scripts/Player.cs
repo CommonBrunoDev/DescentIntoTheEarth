@@ -1,5 +1,6 @@
 // Mouse movement (these are captured in an earlier function within Update)
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -42,8 +43,29 @@ public class Player : MonoBehaviour, IDamageable
 
     [Header("UI")]
     [SerializeField] Image slimeScreen;
-    public GameObject exitPopup;
-    public GameObject bombPopup;
+    [SerializeField] TextMeshProUGUI missilesLeft;
+    [SerializeField] TextMeshProUGUI lasersLeft;
+    [SerializeField] TextMeshProUGUI scoreDisplay;
+    [SerializeField] RawImage shipIcon;
+    [SerializeField] TextMeshProUGUI shipHp;
+    [SerializeField] TextMeshProUGUI headlightsOnOff;
+    [SerializeField] TextMeshProUGUI enemiesLeft;
+    [SerializeField] TextMeshProUGUI shipStatus;
+    [SerializeField] TextMeshProUGUI timePassed;
+    [SerializeField] TextMeshProUGUI energyLeft;
+
+    [SerializeField] GameObject bombManager;
+    [SerializeField] TextMeshProUGUI bombTimer;
+
+    public GameObject enemyEscaped;
+    public float enemyVisTime;
+    public float enemyVisTimer = 0;
+
+    public GameObject cantEscape;
+    public float escapeVisTime;
+    public float escapeVisTimer = 0;
+
+    public TextMeshProUGUI bombPopup;
     [Space(20)]
 
     [Header("Other")] //HL = HeadLights
@@ -65,6 +87,11 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Awake()
     {
+        cantEscape.SetActive(false);
+        enemyEscaped.SetActive(false);
+        bombPopup.gameObject.SetActive(false);
+        bombManager.SetActive(false);
+
         if (instance != null && instance != this)
             Destroy(gameObject);
         else
@@ -74,6 +101,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         rb = GetComponent<Rigidbody>();
         HLEnergyTimer = HLEnergyUsage;
+        HP = 100;
     }
 
     private void OnEnable()
@@ -96,6 +124,7 @@ public class Player : MonoBehaviour, IDamageable
         ProcessShooting();
         ProcessHeadLights();
         ProcessUI();
+        ProcessTimers();
     }
 
     #region Processes
@@ -217,15 +246,80 @@ public class Player : MonoBehaviour, IDamageable
     public void HandleActivation()
     {
         if (HLOn.enabled)
-        { HLOn.enabled = false; }
+        { 
+            HLOn.enabled = false; 
+            headlightsOnOff.text = "OFF";
+        }
         else if (energyAmount > 0)
-        { HLOn.enabled = true; }
+        { 
+            HLOn.enabled = true;
+            headlightsOnOff.text = "ON";
+        }
     }
 
     private void ProcessUI()
     {
         if (slimeScreen != null)
         { slimeScreen.color = Color.Lerp(slimeScreen.color, new Color(slimeScreen.color.r, slimeScreen.color.g, slimeScreen.color.b, 0), Time.deltaTime); }
+
+        missilesLeft.text = rocketAmount.ToString();
+        lasersLeft.text = (energyAmount * 2).ToString();
+
+        var numAmount = 5 - GameManager.Instance.totalPoints.ToString().Length;
+        var fullNum = "";
+        while (numAmount > 0)
+        { fullNum += "0"; numAmount--; }
+        scoreDisplay.text = fullNum + GameManager.Instance.totalPoints.ToString();
+
+        shipHp.text = health.ToString();
+        if (health > 75)
+        {
+            shipIcon.color = new Color(0, 1, 0, 1);
+            shipStatus.text = "GOOD";
+        }
+        else if (health > 50)
+        {
+            shipIcon.color = new Color(1, 1, 0, 1);
+            shipStatus.text = "OK";
+        }
+        else if (health > 25)
+        {
+            shipIcon.color = new Color(1, 0.5f, 0, 1);
+            shipStatus.text = "BAD";
+        }
+        else
+        {
+            shipIcon.color = new Color(1, 0, 0, 1);
+            shipStatus.text = "DANGER";
+        }
+        
+        energyLeft.text = energyAmount.ToString();
+        enemiesLeft.text = (GameManager.Instance.totalEnemies - GameManager.Instance.enemiesEscaped - GameManager.Instance.enemiesKilled).ToString();
+
+        timePassed.text = GameManager.Instance.playerTime.ToString("F2");
+
+    }
+
+    private void ProcessTimers()
+    {
+        if (GameManager.Instance.bombPlanted)
+        { bombTimer.text = GameManager.Instance.bombTimer.ToString("F2"); }
+
+        if (enemyVisTimer > 0)
+        {
+            enemyVisTimer -= Time.deltaTime;
+            enemyEscaped.SetActive(true);
+        }
+        else
+        { enemyEscaped.SetActive(false); }
+
+        if (escapeVisTimer > 0)
+        {
+            escapeVisTimer -= Time.deltaTime;
+            cantEscape.SetActive(true);
+        }
+        else
+        { cantEscape.SetActive(false); }
     }
     #endregion
 
@@ -247,12 +341,14 @@ public class Player : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        Debug.Log("Player took damage: " + damage);
+        health -= damage;
+        if (health <= 0)
+        { Death(); }
     }
 
     public void Death()
     {
-        Debug.Log("De de destructionnnn");
+        GameManager.Instance.GameOver();
     }
 
     public void Slimed()

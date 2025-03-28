@@ -12,21 +12,16 @@ public class ExitArea : MonoBehaviour
             }
             else
             {
-                Player.Instance.exitPopup.SetActive(true);
+                Player.Instance.cantEscape.SetActive(true);
+                Player.Instance.escapeVisTimer = Player.Instance.escapeVisTime;
             }
         }
         else if (other.CompareTag("Enemy"))
         {
             GameManager.Instance.EnemyExit();
+            Player.Instance.enemyEscaped.SetActive(true);
+            Player.Instance.enemyVisTimer = Player.Instance.enemyVisTime;
             Destroy(other.gameObject);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Player.Instance.exitPopup.SetActive(false);
         }
     }
 }
