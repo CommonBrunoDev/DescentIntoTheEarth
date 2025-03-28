@@ -19,6 +19,7 @@ public class EnemyFlying : Enemy
     private Bullet bullet;
 
     [SerializeField] Transform meshTransform;
+    [SerializeField] Transform shootPoint;
 
     private void Start()
     {
@@ -28,8 +29,8 @@ public class EnemyFlying : Enemy
     {
 
         //Checking player
-        Debug.Log(Vector3.Distance(movePoint, transform.position));
-        if (Vector3.Distance(movePoint, transform.position) < 20)
+        Debug.Log(Vector3.Distance(Player.Instance.transform.position, transform.position));
+        if (Vector3.Distance(Player.Instance.transform.position, transform.position) < 6)
         {
             var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
             if (Physics.Raycast(ray, out var hit, 1000, attackLayers))
@@ -79,7 +80,7 @@ public class EnemyFlying : Enemy
 
     private void Shoot()
     {
-        bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+        bullet = Instantiate(bulletPrefab, shootPoint.position, transform.rotation);
         bullet.SetDirection((Player.Instance.transform.position - transform.position) / 10, gameObject);
     }
 

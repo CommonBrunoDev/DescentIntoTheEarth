@@ -42,6 +42,7 @@ public class Player : MonoBehaviour, IDamageable
 
     [Header("UI")]
     [SerializeField] Image slimeScreen;
+    public GameObject exitLabel;
     [Space(20)]
 
     [Header("Other")] //HL = HeadLights
@@ -59,6 +60,7 @@ public class Player : MonoBehaviour, IDamageable
     { get{ return instance; } }
 
     public float health { get; private set; }
+    public float HP { set { health = value; } }
 
     private void Awake()
     {

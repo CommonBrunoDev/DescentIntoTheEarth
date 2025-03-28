@@ -16,10 +16,18 @@ public class GameManager : MonoBehaviour
     public float playerHealth = 100;
 
     public float totalPoints = 0f;
+    public float enemyKillPoints = 0f;
+    public float enemyEscapePoints = 0f;
+    public float soldierSavedPoints = 0f;
+    public float soldierKilledPoints = 0f;
+    public bool hitless = true;
     public float playerTime = 0f;
+
     public int totalEnemies = 0;
     public int enemiesEscaped = 0;
     public int enemiesKilled = 0;
+    public bool bombPlanted = false;
+    public float bombTimer = 180f;
 
     public bool controllerMode = false;
 
@@ -31,7 +39,22 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void EnemyEscaped()
+    public void EnemyExit()
     {
+
+    }
+
+    public void Addpoints(int points)
+    {
+        totalPoints += points;
+    }
+
+    public void LevelComplete()
+    {
+
+    }
+    public void GameOver()
+    {
+
     }
 }
