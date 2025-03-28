@@ -5,6 +5,8 @@ public class EnemyBulletNormal : Bullet
     [SerializeField] float damage;
     private void OnTriggerEnter(Collider collision)
     {
+        transform.rotation = Quaternion.LookRotation(direction);
+
         Debug.Log(collision.name);
         if (collision.gameObject != parent)
         {

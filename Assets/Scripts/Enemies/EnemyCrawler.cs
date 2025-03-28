@@ -27,18 +27,21 @@ public class EnemyCrawler : Enemy
 
     private void Update()
     {
-        var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
-        if (Physics.Raycast(ray, out var hit, 1000, layersToHit))
+        if (Vector3.Distance(Player.Instance.transform.position, transform.position) < 3)
         {
-            if (hit.collider.CompareTag("Player") && (!stopShooting))
+            var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
+            if (Physics.Raycast(ray, out var hit, 1000, layersToHit))
             {
-                AIScript.LinkedAgent.speed = 0;
-                isShooting = true;
-            }
-            else
-            {
-                AIScript.LinkedAgent.speed = agentSpeed;
-                isShooting = false;
+                if (hit.collider.CompareTag("Player") && (!stopShooting))
+                {
+                    AIScript.LinkedAgent.speed = 0;
+                    isShooting = true;
+                }
+                else
+                {
+                    AIScript.LinkedAgent.speed = agentSpeed;
+                    isShooting = false;
+                }
             }
         }
         
