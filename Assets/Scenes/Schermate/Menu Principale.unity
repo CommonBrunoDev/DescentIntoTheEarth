@@ -830,7 +830,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: OPZIONI
+  m_text: COMANDI
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a06e6f47852287246bcc472c9e1712a5, type: 2}
   m_sharedMaterial: {fileID: -5511999433792431240, guid: a06e6f47852287246bcc472c9e1712a5, type: 2}

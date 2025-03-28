@@ -875,9 +875,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Ricariche Energia x3
+  m_text: 'Ricariche Energia x2
 
-    Ricariche HP x2
+    Ricariche HP x1
 
     Ricariche Missili x2'
   m_isRightToLeft: 0
@@ -1884,7 +1884,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 90
+  m_text: 58
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cd8483d300b483946ba46754efa17195, type: 2}
   m_sharedMaterial: {fileID: 7794470986866653221, guid: cd8483d300b483946ba46754efa17195, type: 2}

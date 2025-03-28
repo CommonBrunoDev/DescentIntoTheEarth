@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bede1547629ec74f9575b87f4dd2e76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  respawnTime: 5
+  respawnTime: 60
   respawning: 0
   healPower: 100
 --- !u!1001 &4053213443248008452
