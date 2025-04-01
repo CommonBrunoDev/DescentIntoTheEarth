@@ -18,9 +18,11 @@ public class NPC : Pickup
     private void SaveNPC()
     {
         GameManager.Instance.soldierSavedPoints += 200f;
+        GameManager.Instance.totalPoints += 200f;
     }
     private void KillNPC()
     {
         GameManager.Instance.soldierKilledPoints += 200f;
+        GameManager.Instance.totalPoints -= 200f;
     }
 }

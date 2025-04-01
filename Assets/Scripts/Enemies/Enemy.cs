@@ -3,18 +3,21 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField] public float health { get; set; }
+    public float health { get; set; }
+
+    public float startingHealth = 5;
+    public float detectionDistance = 0;
 
     public float slimeExplosionRadius = 1;
     public float slimeDamage = 4;
     public float pointsAwarded = 0;
 
-    private void Start()
+    protected void Start()
     {
         if (GameManager.Instance != null)
             GameManager.Instance.totalEnemies++;
 
-        health = 100;
+        health = startingHealth;
     }
 
     public void TakeDamage(float damage)
@@ -29,6 +32,7 @@ public class Enemy : MonoBehaviour, IDamageable
         Slimify();
         GameManager.Instance.totalPoints += pointsAwarded;
         GameManager.Instance.enemyKillPoints += pointsAwarded;
+        GameManager.Instance.enemiesKilled++;
         Destroy(gameObject);
     }
     public void Slimify()
@@ -45,5 +49,4 @@ public class Enemy : MonoBehaviour, IDamageable
             }
         }
     }
-
 }

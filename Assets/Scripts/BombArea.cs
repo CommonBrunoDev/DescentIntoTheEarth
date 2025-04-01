@@ -14,31 +14,30 @@ public class BombArea : MonoBehaviour
     {
         if (playerInArea && !GameManager.Instance.bombPlanted)
         {
+            Player.Instance.bombPopup.gameObject.SetActive(true);
             if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 2"))
             {
                 GameManager.Instance.bombPlanted = true;
                 Player.Instance.HandleActivation();
-                Player.Instance.bombPopup.gameObject.SetActive(false);
+                spriteRenderer.gameObject.SetActive(true);
                 MusicManager.Instance.PlayAlertMusic();
             }
+        }
+        else
+        {
+            Player.Instance.bombPopup.gameObject.SetActive(false);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && !GameManager.Instance.bombPlanted)
-        {
-            Player.Instance.bombPopup.gameObject.SetActive(true);
-            playerInArea = true;
-        }
+        { playerInArea = true; }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player") && !GameManager.Instance.bombPlanted)
-        {
-            Player.Instance.bombPopup.gameObject.SetActive(false);
-            playerInArea = false;
-        }
+        { playerInArea = false; }
     }
 }

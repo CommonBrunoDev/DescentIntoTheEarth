@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4909960702535650660}
   m_Layer: 0
   m_Name: EnemyBullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -81,6 +81,10 @@ PrefabInstance:
     - target: {fileID: 3658526192748639750, guid: 1455482dcc372f44d8d6b70d6596b5e0, type: 3}
       propertyPath: m_Name
       value: EnemyProjectile
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658526192748639750, guid: 1455482dcc372f44d8d6b70d6596b5e0, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 5488649975088772867, guid: 1455482dcc372f44d8d6b70d6596b5e0, type: 3}
       propertyPath: m_LocalScale.x

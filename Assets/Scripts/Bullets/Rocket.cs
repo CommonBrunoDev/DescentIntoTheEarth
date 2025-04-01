@@ -6,6 +6,7 @@ public class Rocket : Bullet
     [SerializeField] float explosionRadius;
     [SerializeField] float explosionDamage;
 
+    [SerializeField] GameObject missileMesh;
     [SerializeField] MeshRenderer explosionMesh;
     [SerializeField] float explosionMeshTimer;
     private bool hasExploded = false;
@@ -26,15 +27,12 @@ public class Rocket : Bullet
     }
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.CompareTag("Wall"))
-        {
-            Explode();
-        }
-        else if (collision.gameObject != parent)
+        if (collision.gameObject != parent)
         {
             Explode();
             hasExploded = true;
             explosionMesh.enabled = true;
+            missileMesh.SetActive(false);
         }
     }
     public void Explode()

@@ -19,35 +19,33 @@ public class EnemyCrawler : Enemy
     [SerializeField] Transform shootPoint;
     [SerializeField] Transform exitPoint;
 
-    private void Start()
+    private new void Start()
     {
         AIScript = GetComponent<AICrawler>();
         AIScript.LinkedAgent.SetDestination(exitPoint.position);
+        base.Start();
     }
 
     private void Update()
     {
-        if (Vector3.Distance(Player.Instance.transform.position, transform.position) < 3)
+        var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
+        if (Physics.Raycast(ray, out var hit, 1000, layersToHit))
         {
-            var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
-            if (Physics.Raycast(ray, out var hit, 1000, layersToHit))
+            if (hit.collider.CompareTag("Player") && (!stopShooting) && Vector3.Distance(Player.Instance.transform.position, transform.position) < detectionDistance)
             {
-                if (hit.collider.CompareTag("Player") && (!stopShooting))
-                {
-                    AIScript.LinkedAgent.speed = 0;
-                    isShooting = true;
-                }
-                else
-                {
-                    AIScript.LinkedAgent.speed = agentSpeed;
-                    isShooting = false;
-                }
+                AIScript.LinkedAgent.speed = 0;
+                isShooting = true;
+            }
+            else
+            {
+                AIScript.LinkedAgent.speed = agentSpeed;
+                isShooting = false;
             }
         }
         
         if (isShooting)
         {
-            transform.rotation = Quaternion.LookRotation(Player.Instance.transform.position - transform.position);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(Player.Instance.transform.position - transform.position), Time.deltaTime * 2);
             if (shootTimer <= 0 && bullet == null)
             {
                 Shoot();
@@ -58,13 +56,13 @@ public class EnemyCrawler : Enemy
         }
         else
         {
-            transform.rotation = Quaternion.LookRotation(AIScript.LinkedAgent.desiredVelocity);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(AIScript.LinkedAgent.desiredVelocity), Time.deltaTime * 2);
         }
     }
 
     private void Shoot()
     {
-        bullet = Instantiate(bulletPrefab, shootPoint.position, transform.rotation);
+        bullet = Instantiate(bulletPrefab, shootPoint.position, Quaternion.LookRotation(Player.Instance.transform.position - transform.position));
         bullet.SetDirection((Player.Instance.transform.position - transform.position) / 10, gameObject);
     }
 }

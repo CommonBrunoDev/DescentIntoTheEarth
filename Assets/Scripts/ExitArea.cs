@@ -6,6 +6,7 @@ public class ExitArea : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Debug.Log("Player");
             if (GameManager.Instance.bombPlanted)
             {
                 GameManager.Instance.LevelComplete();
@@ -18,6 +19,7 @@ public class ExitArea : MonoBehaviour
         }
         else if (other.CompareTag("Enemy"))
         {
+            Debug.Log("Enemy");
             GameManager.Instance.EnemyExit();
             Player.Instance.enemyEscaped.SetActive(true);
             Player.Instance.enemyVisTimer = Player.Instance.enemyVisTime;

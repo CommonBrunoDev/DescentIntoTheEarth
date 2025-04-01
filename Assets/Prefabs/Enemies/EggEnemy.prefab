@@ -280,8 +280,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d8d7058bcb27546ad76e40fa93f039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingHealth: 5
+  detectionDistance: 0
   slimeExplosionRadius: 1
   slimeDamage: 4
+  pointsAwarded: 100
 --- !u!1001 &8985745898283695343
 PrefabInstance:
   m_ObjectHideFlags: 0

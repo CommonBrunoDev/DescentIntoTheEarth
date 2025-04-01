@@ -8,6 +8,8 @@ public class MissilePickup : Pickup
         if (other.CompareTag("Player"))
         {
             Player.Instance.rocketAmount += missileReload;
+            GetComponent<SpriteRenderer>().enabled = false;
+            respawning = true;
         }
     }
 }

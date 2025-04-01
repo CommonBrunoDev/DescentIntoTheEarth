@@ -8,6 +8,8 @@ public class LaserPickup : Pickup
         if (other.CompareTag("Player"))
         {
             Player.Instance.energyAmount = energySet;
+            GetComponent<SpriteRenderer>().enabled = false;
+            respawning = true;
         }
     }
 }

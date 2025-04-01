@@ -21,8 +21,9 @@ public class Player : MonoBehaviour, IDamageable
     Vector3 CurrentSpeed = Vector3.zero;
 
     [Header("Camera")]
-    [SerializeField] float MouseSens = 5f;
-    [SerializeField] float MouseSnap = 20f;
+    [SerializeField] float cameraSens = 5f;
+    [SerializeField] float cameraSnap = 20f;
+    [SerializeField] Camera cameraObj;
     [Space(20)]
 
     [Header("Movement")]
@@ -42,11 +43,14 @@ public class Player : MonoBehaviour, IDamageable
     [Space(20)]
 
     [Header("UI")]
+    [SerializeField] GameObject UI;
+    [SerializeField] GameObject pauseUI;
     [SerializeField] Image slimeScreen;
     [SerializeField] TextMeshProUGUI missilesLeft;
     [SerializeField] TextMeshProUGUI lasersLeft;
     [SerializeField] TextMeshProUGUI scoreDisplay;
     [SerializeField] RawImage shipIcon;
+    [SerializeField] Sprite[] iconImages;
     [SerializeField] TextMeshProUGUI shipHp;
     [SerializeField] TextMeshProUGUI headlightsOnOff;
     [SerializeField] TextMeshProUGUI enemiesLeft;
@@ -87,11 +91,6 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Awake()
     {
-        cantEscape.SetActive(false);
-        enemyEscaped.SetActive(false);
-        bombPopup.gameObject.SetActive(false);
-        bombManager.SetActive(false);
-
         if (instance != null && instance != this)
             Destroy(gameObject);
         else
@@ -99,6 +98,12 @@ public class Player : MonoBehaviour, IDamageable
     }
     void Start()
     {
+        pauseUI.SetActive(false);
+        cantEscape.SetActive(false);
+        enemyEscaped.SetActive(false);
+        bombPopup.gameObject.SetActive(false);
+        bombManager.SetActive(false);
+
         rb = GetComponent<Rigidbody>();
         HLEnergyTimer = HLEnergyUsage;
         HP = 100;
@@ -119,12 +124,17 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        ProcessLook();
-        ProcessMovement();
-        ProcessShooting();
-        ProcessHeadLights();
-        ProcessUI();
-        ProcessTimers();
+        if (GameManager.Instance.gameState == GameStates.Paused && (Input.GetKeyDown("joystick button 6") || Input.GetKeyDown("joystick button 7")))
+        { PauseGame(false); }
+        else if (GameManager.Instance.gameState == GameStates.Playing)
+        {
+            ProcessLook();
+            ProcessMovement();
+            ProcessShooting();
+            ProcessHeadLights();
+            ProcessUI();
+            ProcessTimers();
+        }
     }
 
     #region Processes
@@ -142,11 +152,11 @@ public class Player : MonoBehaviour, IDamageable
             inputLook.y = Input.GetAxis("Mouse Y"); // Mouse Y
         }
 
-        accMouseX = Mathf.Lerp(accMouseX, inputLook.x, MouseSnap * Time.deltaTime);
-        accMouseY = Mathf.Lerp(accMouseY, inputLook.y, MouseSnap * Time.deltaTime);
+        accMouseX = Mathf.Lerp(accMouseX, inputLook.x, cameraSnap * Time.deltaTime);
+        accMouseY = Mathf.Lerp(accMouseY, inputLook.y, cameraSnap * Time.deltaTime);
 
-        float rotationX = accMouseX * MouseSens * 100f * Time.deltaTime;
-        float rotationY = accMouseY * MouseSens * 100f * Time.deltaTime;
+        float rotationX = accMouseX * cameraSens * 100f * Time.deltaTime;
+        float rotationY = accMouseY * cameraSens * 100f * Time.deltaTime;
 
         verticalRotation = -rotationY;
         if (playerControls == InputMode.Controller && Input.GetAxis("Joystick Rot ZL") + Input.GetAxis("Joystick Rot ZR") != 0)
@@ -259,54 +269,72 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ProcessUI()
     {
+        if ((playerControls == InputMode.Keyboard && Input.GetKeyDown(KeyCode.P))
+            || (playerControls == InputMode.Controller && (Input.GetKeyDown("joystick button 6") || Input.GetKeyDown("joystick button 7"))))
+        { PauseGame(true); return; }
+
+        if ((playerControls == InputMode.Keyboard && Input.GetKey(KeyCode.R))
+            || (playerControls == InputMode.Controller && Input.GetKey("joystick button 3")))
+        { UI.SetActive(false); cameraObj.transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0)); }
+        else
+        { UI.SetActive(true); cameraObj.transform.localRotation = Quaternion.Euler(Vector3.zero); }
+
         if (slimeScreen != null)
         { slimeScreen.color = Color.Lerp(slimeScreen.color, new Color(slimeScreen.color.r, slimeScreen.color.g, slimeScreen.color.b, 0), Time.deltaTime); }
 
         missilesLeft.text = rocketAmount.ToString();
         lasersLeft.text = (energyAmount * 2).ToString();
 
-        var numAmount = 5 - GameManager.Instance.totalPoints.ToString().Length;
-        var fullNum = "";
+        var num = GameManager.Instance.totalPoints;
+        var stringNum = "";
+
+        if (num < 0) stringNum += "-";
+        num = Mathf.Abs(num);
+        var numAmount = 5 - num.ToString().Length;
         while (numAmount > 0)
-        { fullNum += "0"; numAmount--; }
-        scoreDisplay.text = fullNum + GameManager.Instance.totalPoints.ToString();
+        { stringNum += "0"; numAmount--; }
+        scoreDisplay.text = stringNum + num.ToString();
 
         shipHp.text = health.ToString();
         if (health > 75)
         {
-            shipIcon.color = new Color(0, 1, 0, 1);
+            shipIcon.texture = iconImages[0].texture;
             shipStatus.text = "GOOD";
         }
         else if (health > 50)
         {
-            shipIcon.color = new Color(1, 1, 0, 1);
+            shipIcon.texture = iconImages[1].texture;
             shipStatus.text = "OK";
         }
         else if (health > 25)
         {
-            shipIcon.color = new Color(1, 0.5f, 0, 1);
+            shipIcon.texture = iconImages[2].texture;
             shipStatus.text = "BAD";
         }
         else
         {
-            shipIcon.color = new Color(1, 0, 0, 1);
+            shipIcon.texture = iconImages[3].texture;
             shipStatus.text = "DANGER";
         }
         
         energyLeft.text = energyAmount.ToString();
         enemiesLeft.text = (GameManager.Instance.totalEnemies - GameManager.Instance.enemiesEscaped - GameManager.Instance.enemiesKilled).ToString();
 
-        timePassed.text = GameManager.Instance.playerTime.ToString("F2");
+        timePassed.text = GetTimeString((int)GameManager.Instance.playerTime);
 
     }
 
     private void ProcessTimers()
     {
         if (GameManager.Instance.bombPlanted)
-        { bombTimer.text = GameManager.Instance.bombTimer.ToString("F2"); }
+        {
+            bombTimer.text = GetTimeString((int)GameManager.Instance.bombTimer);
+            bombManager.gameObject.SetActive(true);
+        }
 
         if (enemyVisTimer > 0)
         {
+            Debug.Log(enemyVisTimer);
             enemyVisTimer -= Time.deltaTime;
             enemyEscaped.SetActive(true);
         }
@@ -324,6 +352,38 @@ public class Player : MonoBehaviour, IDamageable
     #endregion
 
     #region Useful Methods
+    public void PauseGame(bool pause)
+    {
+        GameManager.Instance.PauseGame(pause);
+        UI.SetActive(!pause);
+        pauseUI.SetActive(pause);
+    }
+    string GetTimeString(int time)
+    {
+        int seconds = time;
+
+        int minutes = (int)seconds / 60;
+        seconds = seconds - minutes * 60;
+
+        int hours = (int)minutes / 60;
+        minutes = minutes - hours * 60;
+
+        string timeString = "";
+
+        if (hours > 0)
+        {
+            if (hours < 10) timeString += "0";
+            timeString += hours.ToString() + ":";
+        }
+
+        if (minutes < 10) timeString += "0";
+        timeString += minutes.ToString() + ":";
+
+        if (seconds < 10) timeString += "0";
+        timeString += seconds.ToString();
+
+        return timeString;
+    }
     float CalculateSpeed(float input,float speed)
     {
         if (input == 0)
@@ -344,6 +404,7 @@ public class Player : MonoBehaviour, IDamageable
         health -= damage;
         if (health <= 0)
         { Death(); }
+        GameManager.Instance.hitless = false;
     }
 
     public void Death()
@@ -354,7 +415,7 @@ public class Player : MonoBehaviour, IDamageable
     public void Slimed()
     {
         if (slimeScreen != null)
-        { slimeScreen.color = new Color(0, 0, 0, 1f); }
+        { slimeScreen.color = new Color(slimeScreen.color.r, slimeScreen.color.g, slimeScreen.color.b, 1f); }
         else 
         { Debug.Log("SLIMED! Slimescreen not set");  }
     }

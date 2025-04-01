@@ -21,35 +21,34 @@ public class EnemyFlying : Enemy
     [SerializeField] Transform meshTransform;
     [SerializeField] Transform shootPoint;
 
-    private void Start()
+    private new void Start()
     {
         movePoint = transform.position;
+        base.Start();
     }
     private void Update()
     {
-
         //Checking player
-        Debug.Log(Vector3.Distance(Player.Instance.transform.position, transform.position));
-        if (Vector3.Distance(Player.Instance.transform.position, transform.position) < 6)
+        var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
+        if (Physics.Raycast(ray, out var hit, 1000, attackLayers))
         {
-            var ray = new Ray(transform.position, Player.Instance.transform.position - transform.position);
-            if (Physics.Raycast(ray, out var hit, 1000, attackLayers))
+            Debug.DrawLine(transform.position, Player.Instance.transform.position, Color.blue);
+            if (hit.collider.CompareTag("Player"))
+                Debug.Log(hit.collider.name + " / " + stopShooting + " / " + Vector3.Distance(Player.Instance.transform.position, transform.position).ToString());
+            if (hit.collider.CompareTag("Player") && (!stopShooting) && Vector3.Distance(Player.Instance.transform.position, transform.position) < detectionDistance)
             {
-                if (hit.collider.CompareTag("Player") && (!stopShooting))
-                {
-                    isShooting = true;
-                    currentSpeed = speed / 2;
-                }
-                else
-                {
-                    isShooting = false;
-                    currentSpeed = speed;
-                }
+                isShooting = true;
+                currentSpeed = speed / 2;
+            }
+            else
+            {
+                isShooting = false;
+                currentSpeed = speed;
             }
         }
 
         //Shooting
-        if(isShooting)
+        if (isShooting)
         {
             if (shootTimer <= 0 && bullet == null)
             {
@@ -61,8 +60,9 @@ public class EnemyFlying : Enemy
         }
 
         //Check movement and walls
+        Debug.DrawLine(transform.position, movePoint, Color.red);
         var moveRay = new Ray(transform.position, movePoint - transform.position);
-        if (Physics.Raycast(moveRay, maxMoveDistance, moveLayers) || Vector3.Distance(movePoint, transform.position) < 1.5f)
+        if (Physics.Raycast(moveRay, maxMoveDistance, moveLayers) || Vector3.Distance(movePoint, transform.position) < 0.5f)
         { movePoint = transform.position + Random.insideUnitSphere * Random.Range(0f, 1f) * maxMoveDistance; }
         else 
         { transform.position += (movePoint - transform.position) * currentSpeed * Time.deltaTime; }
@@ -73,14 +73,14 @@ public class EnemyFlying : Enemy
     private void HandleRotation()
     {
         if (isShooting)
-        { meshTransform.rotation = Quaternion.LookRotation(Player.Instance.transform.position - transform.position); }
+        { transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(Player.Instance.transform.position - transform.position), Time.deltaTime * 2); }
         else
-        { meshTransform.rotation = Quaternion.LookRotation(movePoint - transform.position); }
+        { transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(movePoint - transform.position), Time.deltaTime * 2);  }
     }
 
     private void Shoot()
     {
-        bullet = Instantiate(bulletPrefab, shootPoint.position, transform.rotation);
+        bullet = Instantiate(bulletPrefab, shootPoint.position,Quaternion.LookRotation(Player.Instance.transform.position - transform.position));
         bullet.SetDirection((Player.Instance.transform.position - transform.position) / 10, gameObject);
     }
 

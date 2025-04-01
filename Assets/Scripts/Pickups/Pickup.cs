@@ -25,8 +25,6 @@ public class Pickup : MonoBehaviour
     {
         if (!respawning)
         {
-            respawning = true;
-            GetComponent<SpriteRenderer>().enabled = false;
             BodyEntered(other); 
         }
     }

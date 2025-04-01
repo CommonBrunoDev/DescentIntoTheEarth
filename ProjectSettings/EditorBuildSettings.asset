@@ -6,7 +6,37 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Schermate/GameStart.unity
+    guid: a89f6a98e273ff14ab1eedd75405816a
+  - enabled: 1
     path: Assets/Scenes/test.unity
     guid: 3ec296ac595324a438e9224ef81bb12e
+  - enabled: 1
+    path: Assets/Scenes/Schermate/CommandsKey.unity
+    guid: f4c84f1d940aa0d4c9356d9df0a06891
+  - enabled: 1
+    path: Assets/Scenes/Schermate/Confirm.unity
+    guid: 1f0fb3ea059d8c8418cb8cb286ab4850
+  - enabled: 1
+    path: Assets/Scenes/Schermate/Credits.unity
+    guid: 2ab52f5fc2a75164a96548848eb8535a
+  - enabled: 1
+    path: Assets/Scenes/Schermate/Incomplete.unity
+    guid: 3c082256b2d835a4685ba0866bcb900f
+  - enabled: 1
+    path: Assets/Scenes/Schermate/Levels.unity
+    guid: 4719b25de7478b640863e5517679b505
+  - enabled: 1
+    path: Assets/Scenes/Schermate/MainMenu.unity
+    guid: 5862befcae0ec6f4aa56e4c459139d42
+  - enabled: 1
+    path: Assets/Scenes/Schermate/CommandsJoy.unity
+    guid: ab3c001df962b654c9c45f51f739f6d9
+  - enabled: 1
+    path: Assets/Scenes/Schermate/GameVictory.unity
+    guid: 0c90cb2785dd1d84a9bda1d431cac7fd
+  - enabled: 1
+    path: Assets/Scenes/Schermate/GameOver.unity
+    guid: 2dfa299cf5712b647817d0758c38ea50
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
